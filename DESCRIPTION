@@ -1,11 +1,19 @@
 Package: HMM
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Hidden Markov Models
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Marco Floess
+Maintainer: <mfloess@outlook.de>
+Description: Framework for creating Hidden Markov Models,
+  generating observation sequences from given models,
+  computing the probability of a given observation sequence for a model,
+  computing the most likely underlying state sequences for a given observation sequence for a model,
+  estimating the model parameters given a set of observation sequences.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Imports: 
+    assertthat,
+    checkmate,
+    R6
+RoxygenNote: 7.1.2
