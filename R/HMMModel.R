@@ -9,6 +9,8 @@ HMMModel <- R6::R6Class("HMMModel", public = list(
   states = NULL,
   #' @field signal.set Observable signals that this model can produce
   signal.set = NULL,
+  #' @field initial.state.dist Probabilities for states initially
+  initial.state.dist = NULL,
   #' @field state.transitions Probabilities for transitions between states
   state.transitions = NULL,
   #' @field signal.probabilities Probabilities to produce signals in certain states
@@ -32,12 +34,19 @@ HMMModel <- R6::R6Class("HMMModel", public = list(
   },
 
   #' @description
+  #' Set the initial state distribution.
+  #' @param initial.state.dist A vector of the initial state distribution.
+  setInitialStateDist = function(initial.state.dist) {
+
+    checkmate::assertNumeric(initial.state.dist, len = length(self$states), any.missing = FALSE)
+    checkmate::assertNumeric(sum(initial.state.dist), lower = 1, upper = 1)
+
+    self$initial.state.dist <- initial.state.dist
+  },
+
+  #' @description
   #' Set state transition probabilites.
   #' @param state.transitions A matrix of state transition probabilites.
-  #' @examples
-  #' M <- HMMModel$new("Ex", c("state1", "state2"), c("signalA", "signalB", "signalC"))
-  #' M$setStateTransitions(matrix(c(0.4, 0.6, 0.6, 0.4), byrow = TRUE, ncol = 2))
-  #' M$state.transitions
   setStateTransitions = function(state.transitions) {
 
     checkmate::assertMatrix(state.transitions, nrows = length(self$states), ncols = length(self$states))
@@ -49,16 +58,59 @@ HMMModel <- R6::R6Class("HMMModel", public = list(
   #' @description
   #' Set signal probabilites.
   #' @param signal.probabilities A matrix of signal probabilites per state.
-  #' @examples
-  #' M <- HMMModel$new("Ex", c("state1", "state2"), c("signalA", "signalB", "signalC"))
-  #' M$setSignalProbability(matrix(c(0.4, 0.4, 0.2, 0.1, 0.1, 0.8), byrow = TRUE, ncol = 3))
-  #' M$signal.probabilities
   setSignalProbability = function(signal.probabilities) {
 
     checkmate::assertMatrix(signal.probabilities, nrows = length(self$states), ncols = length(self$signal.set))
     checkmate::assertNumeric(rowSums(signal.probabilities), lower = 1, upper = 1)
 
     self$signal.probabilities <- signal.probabilities
+  },
+
+  #' @description
+  #' Compute the probability of a signal sequence via the forward procedure.
+  #' @param ob.sequence A sequence of signal out of the signal.set
+  #' @return A numeric for the probability.
+  getSignalProb = function(ob.sequence) {
+
+    checkmate::assertCharacter(ob.sequence, any.missing = FALSE)
+    checkmate::assertSubset(ob.sequence, self$signal.set)
+
+    N <- length(self$states)
+    alphas <- matrix(0, nrow = N, ncol = 2)
+
+    for (t in seq_len(length(ob.sequence))) {
+
+      t.signal <- ob.sequence[[t]]
+      t.signal.col.number <- seq_len(length(self$signal.set))[t.signal == self$signal.set]
+
+
+      if (t == 1) {
+
+        for (i in seq_len(N)) {
+
+          alphas[i, 2] <- self$initial.state.dist[[i]] *
+            self$signal.probabilities[i, t.signal.col.number]
+        }
+      }
+
+      else {
+        for (i in seq_len(N)) {
+
+          alphas[i, 2] <- sum(alphas[, 1] * self$state.transitions[, i]) *
+            self$signal.probabilities[i, t.signal.col.number]
+        }
+      }
+
+      if (t == length(ob.sequence)) {
+
+        return(sum(alphas[, 2]))
+      }
+
+      else {
+
+        alphas[, 1] <- alphas[, 2]
+      }
+    }
   },
 
   #' @description

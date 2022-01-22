@@ -11,24 +11,6 @@ Create a Hidden Markov Model
 \details{
 A HMM has an identifier, states and observable signals
 }
-\examples{
-
-## ------------------------------------------------
-## Method `HMMModel$setStateTransitions`
-## ------------------------------------------------
-
-M <- HMMModel$new("Ex", c("state1", "state2"), c("signalA", "signalB", "signalC"))
-M$setStateTransitions(matrix(c(0.4, 0.6, 0.6, 0.4), byrow = TRUE, ncol = 2))
-M$state.transitions
-
-## ------------------------------------------------
-## Method `HMMModel$setSignalProbability`
-## ------------------------------------------------
-
-M <- HMMModel$new("Ex", c("state1", "state2"), c("signalA", "signalB", "signalC"))
-M$setSignalProbability(matrix(c(0.4, 0.4, 0.2, 0.1, 0.1, 0.8), byrow = TRUE, ncol = 3))
-M$signal.probabilities
-}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -94,16 +76,6 @@ Set state transition probabilites.
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{M <- HMMModel$new("Ex", c("state1", "state2"), c("signalA", "signalB", "signalC"))
-M$setStateTransitions(matrix(c(0.4, 0.6, 0.6, 0.4), byrow = TRUE, ncol = 2))
-M$state.transitions
-}
-\if{html}{\out{</div>}}
-
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-setSignalProbability"></a>}}
@@ -121,16 +93,6 @@ Set signal probabilites.
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{M <- HMMModel$new("Ex", c("state1", "state2"), c("signalA", "signalB", "signalC"))
-M$setSignalProbability(matrix(c(0.4, 0.4, 0.2, 0.1, 0.1, 0.8), byrow = TRUE, ncol = 3))
-M$signal.probabilities
-}
-\if{html}{\out{</div>}}
-
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
